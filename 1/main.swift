@@ -1031,7 +1031,6 @@ while reachedFrequencies.contains(currentFrequency) == false {
     if let nextFrequency = iterator.next() {
         reachedFrequencies.insert(currentFrequency)
         currentFrequency += nextFrequency
-        print("reeached \(currentFrequency)")
     } else {
         iterator = frequencies.makeIterator()
     }
