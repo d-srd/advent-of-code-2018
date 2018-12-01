@@ -1014,10 +1014,26 @@ let input = """
 +73808
 """
 
-let solution = input
+
+let frequencies = input
     .components(separatedBy: "\n")
     .lazy
     .compactMap(Int.init)
-    .reduce(0) { $0 + $1 }
 
-print(solution)
+let resultingFrequency = frequencies.reduce(0) { $0 + $1 }
+print(resultingFrequency)
+
+var reachedFrequencies: Set<Int> = []
+var currentFrequency = 0
+var iterator = frequencies.makeIterator()
+
+while reachedFrequencies.contains(currentFrequency) == false {
+    if let nextFrequency = iterator.next() {
+        reachedFrequencies.insert(currentFrequency)
+        currentFrequency += nextFrequency
+        print("reeached \(currentFrequency)")
+    } else {
+        iterator = frequencies.makeIterator()
+    }
+}
+print(currentFrequency)
