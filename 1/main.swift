@@ -6,7 +6,7 @@ let frequencies = input
     .lazy
     .compactMap(Int.init)
 
-let resultingFrequency = frequencies.reduce(0) { $0 + $1 }
+let resultingFrequency = frequencies.reduce(0, +)
 print(resultingFrequency)
 
 var reachedFrequencies: Set<Int> = []
