@@ -22,3 +22,32 @@ let countOfWordsContainingTwoOrThreeSameCharacters = words
     }
 
 print(countOfWordsContainingTwoOrThreeSameCharacters.0 * countOfWordsContainingTwoOrThreeSameCharacters.1)
+
+
+func differByOneChar(_ first: String, _ second: String) -> Bool {
+    var hasMismatch = false
+    var hasSecondMismatch = false
+    
+    for (firstChar, secondChar) in zip(first, second) {
+        if hasMismatch {
+            if hasSecondMismatch {
+                return false
+            } else {
+                hasSecondMismatch = firstChar != secondChar
+            }
+        } else {
+            hasMismatch = firstChar != secondChar
+        }
+    }
+    
+    return true
+}
+
+var searchWords = words
+while let searchWord = searchWords.first {
+    searchWords = Array(searchWords.dropFirst())
+    
+    for comparisonWord in searchWords where differByOneChar(searchWord, comparisonWord) {
+        print(searchWord, comparisonWord)
+    }
+}
