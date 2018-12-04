@@ -1329,13 +1329,60 @@ let input = """
 #1319 @ 627,639: 23x11
 """
 
-func rect(from formattedString: String) -> CGRect? {
+struct Point: Hashable {
+    let x: Int
+    let y: Int
+}
+
+struct Rect {
+    private let rect: CGRect
+    let id: Int
+    
+    var maxX: CGFloat {
+        return rect.maxX
+    }
+    
+    var minX: CGFloat {
+        return rect.minX
+    }
+    
+    var maxY: CGFloat {
+        return rect.maxY
+    }
+    
+    var minY: CGFloat {
+        return rect.minY
+    }
+    
+    init(x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat, id: Int) {
+        self.rect = CGRect(x: x, y: y, width: width, height: height)
+        self.id = id
+    }
+}
+
+enum Intersection {
+    case none
+    case single
+    case double
+    
+    var next: Intersection {
+        switch self {
+        case .none: return .single
+        case .single: return .double
+        case .double: return .double
+        }
+    }
+}
+
+func rect(from formattedString: String) -> Rect? {
     guard let hashtagIndex = formattedString.firstIndex(of: "#"),
           let monkeyIndex = formattedString.firstIndex(of: "@"),
           let colonIndex = formattedString.firstIndex(of: ":")
     else { return nil }
     
-    let _ = formattedString[formattedString.index(after: hashtagIndex)..<monkeyIndex]
+    let stringId = formattedString[formattedString.index(after: hashtagIndex)..<monkeyIndex]
+        .trimmingCharacters(in: .whitespaces)
+    let id = Int(stringId)
     
     let position = formattedString[formattedString.index(after: monkeyIndex)..<colonIndex]
         .trimmingCharacters(in: .whitespaces)
@@ -1355,7 +1402,7 @@ func rect(from formattedString: String) -> CGRect? {
           let height = size.last
     else { return nil }
     
-    return CGRect(x: x, y: y, width: width, height: height)
+    return Rect(x: x, y: y, width: width, height: height, id: id!)
 }
 
 let rects = input
@@ -1371,25 +1418,6 @@ let height = farthestVertical.maxY
 
 print(width)
 print(height)
-
-struct Point: Hashable {
-    let x: Int
-    let y: Int
-}
-
-enum Intersection {
-    case none
-    case single
-    case double
-    
-    var next: Intersection {
-        switch self {
-        case .none: return .single
-        case .single: return .double
-        case .double: return .double
-        }
-    }
-}
 
 var intersectingPoints: Set<Point> = []
 let initial = Array(repeating: Array(repeating: Intersection.none, count: Int(width)), count: Int(height))
@@ -1414,5 +1442,41 @@ let res = rects
     .joined()
     .filter { $0 == .double }
     .count
+
+let allRects = rects
+    .compactMap { $0 }
+    .reduce(initial) { accumulator, rect in
+        var acc = accumulator
+        
+        for y in stride(from: rect.minY, to: rect.maxY, by: 1) {
+            for x in stride(from: rect.minX, to: rect.maxX, by: 1) {
+                let y = Int(y)
+                let x = Int(x)
+                
+                acc[y][x] = acc[y][x].next
+            }
+        }
+        
+        return acc
+    }
+
+for rect in rects.compactMap({$0}) {
+    var isAllSingle = true
+    
+    for y in stride(from: rect.minY, to: rect.maxY, by: 1) {
+        for x in stride(from: rect.minX, to: rect.maxX, by: 1) {
+            let y = Int(y)
+            let x = Int(x)
+            
+            if allRects[y][x] != .single {
+                isAllSingle = false
+            }
+        }
+    }
+    
+    if isAllSingle {
+        print("nado singlicu: \(rect)")
+    }
+}
 
 print(res)
