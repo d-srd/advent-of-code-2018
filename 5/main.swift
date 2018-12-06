@@ -22,7 +22,7 @@ func areSameIgnoringCase(_ c1: Character, _ c2: Character) -> Bool {
 let eithers = input
     .reduce(into: [Character]()) { (accumulator, current) in
         if let last = accumulator.last, areSameIgnoringCase(last, current) {
-            accumulator.dropLast()
+            accumulator.removeLast()
         } else {
             accumulator.append(current)
         }
