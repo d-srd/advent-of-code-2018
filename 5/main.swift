@@ -4,11 +4,6 @@ import Foundation
 // dabAcCaCBAcCcaDA
 // dabCBAcaDA
 
-enum Either<Left, Right> {
-    case left(Left)
-    case right(Right)
-}
-
 extension Character {
     var isLowercase: Bool {
         return "a"..."z" ~= self
@@ -25,25 +20,11 @@ func areSameIgnoringCase(_ c1: Character, _ c2: Character) -> Bool {
 }
 
 let eithers = input
-    .map { char in
-        char.isLowercase ? Either.left(char) : .right(char)
-    }
-    .reduce(into: [Either<Character, Character>]()) { (accumulator, current) in
-        switch (accumulator.last, current) {
-        case let (.left(l1)?, .right(r1)) where areSameIgnoringCase(l1, r1):
-            accumulator.removeLast()
-        case let (.right(r2)?, .left(l2)) where areSameIgnoringCase(l2, r2):
-            accumulator.removeLast()
-        default:
+    .reduce(into: [Character]()) { (accumulator, current) in
+        if let last = accumulator.last, areSameIgnoringCase(last, current) {
+            accumulator.dropLast()
+        } else {
             accumulator.append(current)
-        }
-    }
-    .map { either -> Character in
-        switch either {
-        case let .left(c):
-            return c
-        case let .right(c):
-            return c
         }
     }
     .count
