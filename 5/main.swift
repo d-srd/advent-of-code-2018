@@ -6,7 +6,7 @@ extension Character {
     }
 }
 
-let input = "dabAcCaCBAcCcaDA"
+let input = try! String(contentsOfFile: "input.txt", encoding: .utf8)
 
 func areSameIgnoringCase(_ c1: Character, _ c2: Character) -> Bool {
     let s1 = String(c1)
