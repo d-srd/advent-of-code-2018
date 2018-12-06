@@ -1,9 +1,5 @@
 import Foundation
 
-
-// dabAcCaCBAcCcaDA
-// dabCBAcaDA
-
 extension Character {
     var isLowercase: Bool {
         return "a"..."z" ~= self
