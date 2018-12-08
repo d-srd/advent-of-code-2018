@@ -16,6 +16,13 @@ func isCharacter(_ character: UnicodeScalar, inverseOf other: UnicodeScalar) -> 
     }
 }
 
+func areSameIgnoringCase(_ c1: UnicodeScalar, _ c2: UnicodeScalar) -> Bool {
+    let s1 = String(c1)
+    let s2 = String(c2)
+    
+    return s1.lowercased() == s2.lowercased()
+}
+
 let characters = UInt8(ascii: "a")...UInt8(ascii: "z")
 
 let result = characters
